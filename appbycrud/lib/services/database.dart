@@ -27,4 +27,11 @@ class DatabaseMethods {
         .doc(id)
         .delete();
   }
+
+  Future updateStudentDetails(String id, Map<String, dynamic> studentData) async {
+    return await FirebaseFirestore.instance
+        .collection('students')
+        .doc(id)
+        .update(studentData);
+  }
 }

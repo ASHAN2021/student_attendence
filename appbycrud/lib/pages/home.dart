@@ -11,6 +11,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController rollNoController = TextEditingController();
+
   @override
   void initState() {
     getontheload();
@@ -67,6 +71,20 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    nameController.text = ds['name'];
+                                    ageController.text = ds['age'];
+                                    rollNoController.text = ds['rollNo'];
+                                    editStudentDetails(ds.id);
+                                  },
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Colors.orange,
+                                    size: 30,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
                                 GestureDetector(
                                   onTap: () async {
                                     await DatabaseMethods().deleteStudent(
@@ -321,4 +339,147 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Future editStudentDetails(String id) => showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Container(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(Icons.cancel),
+                ),
+                Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 27,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'Student',
+                  style: TextStyle(
+                    fontSize: 27,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              'Student Name',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              decoration: BoxDecoration(
+                color: Color(0xffececf8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter Student Name',
+                  hintStyle: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Student Age',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              decoration: BoxDecoration(
+                color: Color(0xffececf8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: ageController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter Student Age',
+                  hintStyle: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Student Roll No',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              decoration: BoxDecoration(
+                color: Color(0xffececf8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: rollNoController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter Student Roll No',
+                  hintStyle: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                Map<String, dynamic> studentData = {
+                  'name': nameController.text,
+                  'age': ageController.text,
+                  'rollNo': rollNoController.text,
+                };
+                await DatabaseMethods()
+                    .updateStudentDetails(id, studentData)
+                    .then((value) {
+                      Navigator.pop(context);
+                    });
+              },
+              child: Text(
+                'Update',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
